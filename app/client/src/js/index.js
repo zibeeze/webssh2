@@ -138,6 +138,12 @@ socket.on('disconnect', function (err) {
   socket.io.reconnection(false)
 })
 
+socket.on('teardown', function (teardown_reason) {
+  reason.style.backgroundColor = 'red'
+  reason.innerHTML = teardown_reason
+  socket.io.disconnect();
+})
+
 socket.on('error', function (err) {
   if (!errorExists) {
     status.style.backgroundColor = 'red'
