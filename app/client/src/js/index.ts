@@ -32,10 +32,10 @@ let myFile: string;
 let errorExists: boolean;
 const term = new Terminal();
 // DOM properties
-const logBtn = document.getElementById('logBtn');
-const credentialsBtn = document.getElementById('credentialsBtn');
-const reauthBtn = document.getElementById('reauthBtn');
-const downloadLogBtn = document.getElementById('downloadLogBtn');
+// const logBtn = document.getElementById('logBtn');
+// const credentialsBtn = document.getElementById('credentialsBtn');
+// const reauthBtn = document.getElementById('reauthBtn');
+// const downloadLogBtn = document.getElementById('downloadLogBtn');
 const status = document.getElementById('status');
 const header = document.getElementById('header');
 const footer = document.getElementById('footer');
@@ -52,7 +52,8 @@ const socket = io({
 });
 
 // reauthenticate
-function reauthSession () { // eslint-disable-line
+function reauthSession() {
+  // eslint-disable-line
   debug('re-authenticating');
   window.location.href = '/ssh/reauth';
   return false;
@@ -60,7 +61,8 @@ function reauthSession () { // eslint-disable-line
 
 // cross browser method to "download" an element to the local system
 // used for our client-side logging feature
-function downloadLog () { // eslint-disable-line
+function downloadLog() {
+  // eslint-disable-line
   if (loggedData === true) {
     myFile = `WebSSH2-${logDate.getFullYear()}${
       logDate.getMonth() + 1
@@ -94,37 +96,39 @@ function downloadLog () { // eslint-disable-line
 }
 // Set variable to toggle log data from client/server to a varialble
 // for later download
-function toggleLog () { // eslint-disable-line
-  if (sessionLogEnable === true) {
-    sessionLogEnable = false;
-    loggedData = true;
-    logBtn.innerHTML = '<i class="fas fa-clipboard fa-fw"></i> Start Log';
-    // console.log(`stopping log, ${sessionLogEnable}`);
-    currentDate = new Date();
-    sessionLog = `${sessionLog}\r\n\r\nLog End for ${sessionFooter}: ${currentDate.getFullYear()}/${
-      currentDate.getMonth() + 1
-    }/${currentDate.getDate()} @ ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}\r\n`;
-    logDate = currentDate;
-    term.focus();
-    return false;
-  }
-  sessionLogEnable = true;
-  loggedData = true;
-  logBtn.innerHTML = '<i class="fas fa-cog fa-spin fa-fw"></i> Stop Log';
-  downloadLogBtn.style.color = '#000';
-  downloadLogBtn.addEventListener('click', downloadLog);
-  // console.log(`starting log, ${sessionLogEnable}`);
-  currentDate = new Date();
-  sessionLog = `Log Start for ${sessionFooter}: ${currentDate.getFullYear()}/${
-    currentDate.getMonth() + 1
-  }/${currentDate.getDate()} @ ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}\r\n\r\n`;
-  logDate = currentDate;
-  term.focus();
-  return false;
-}
+// function toggleLog() {
+//   // eslint-disable-line
+//   if (sessionLogEnable === true) {
+//     sessionLogEnable = false;
+//     loggedData = true;
+//     logBtn.innerHTML = '<i class="fas fa-clipboard fa-fw"></i> Start Log';
+//     // console.log(`stopping log, ${sessionLogEnable}`);
+//     currentDate = new Date();
+//     sessionLog = `${sessionLog}\r\n\r\nLog End for ${sessionFooter}: ${currentDate.getFullYear()}/${
+//       currentDate.getMonth() + 1
+//     }/${currentDate.getDate()} @ ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}\r\n`;
+//     logDate = currentDate;
+//     term.focus();
+//     return false;
+//   }
+//   sessionLogEnable = true;
+//   loggedData = true;
+//   logBtn.innerHTML = '<i class="fas fa-cog fa-spin fa-fw"></i> Stop Log';
+//   downloadLogBtn.style.color = '#000';
+//   downloadLogBtn.addEventListener('click', downloadLog);
+//   // console.log(`starting log, ${sessionLogEnable}`);
+//   currentDate = new Date();
+//   sessionLog = `Log Start for ${sessionFooter}: ${currentDate.getFullYear()}/${
+//     currentDate.getMonth() + 1
+//   }/${currentDate.getDate()} @ ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}\r\n\r\n`;
+//   logDate = currentDate;
+//   term.focus();
+//   return false;
+// }
 
 // replay password to server, requires
-function replayCredentials () { // eslint-disable-line
+function replayCredentials() {
+  // eslint-disable-line
   socket.emit('control', 'replayCredentials');
   // console.log('replaying credentials');
   term.focus();
@@ -133,21 +137,21 @@ function replayCredentials () { // eslint-disable-line
 
 // draw/re-draw menu and reattach listeners
 // when dom is changed, listeners are abandonded
-function drawMenu() {
-  logBtn.addEventListener('click', toggleLog);
-  if (allowreauth) {
-    reauthBtn.addEventListener('click', reauthSession);
-    reauthBtn.style.display = 'block';
-  }
-  if (allowreplay) {
-    credentialsBtn.addEventListener('click', replayCredentials);
-    credentialsBtn.style.display = 'block';
-  }
-  if (loggedData) {
-    downloadLogBtn.addEventListener('click', downloadLog);
-    downloadLogBtn.style.display = 'block';
-  }
-}
+// function drawMenu() {
+//   logBtn.addEventListener('click', toggleLog);
+//   if (allowreauth) {
+//     reauthBtn.addEventListener('click', reauthSession);
+//     reauthBtn.style.display = 'block';
+//   }
+//   if (allowreplay) {
+//     credentialsBtn.addEventListener('click', replayCredentials);
+//     credentialsBtn.style.display = 'block';
+//   }
+//   if (loggedData) {
+//     downloadLogBtn.addEventListener('click', downloadLog);
+//     downloadLogBtn.style.display = 'block';
+//   }
+// }
 
 function resizeScreen() {
   fitAddon.fit();
@@ -157,6 +161,8 @@ function resizeScreen() {
 window.addEventListener('resize', resizeScreen, false);
 
 term.onData((data) => {
+  console.log('TERM ON DATA');
+  console.log({ data });
   socket.emit('data', data);
 });
 
@@ -185,9 +191,9 @@ socket.on('title', (data: string) => {
   document.title = data;
 });
 
-socket.on('menu', () => {
-  drawMenu();
-});
+// socket.on('menu', () => {
+//   drawMenu();
+// });
 
 socket.on('status', (data: string) => {
   status.innerHTML = data;
@@ -226,7 +232,7 @@ socket.on('allowreplay', (data: boolean) => {
   if (data === true) {
     debug(`allowreplay: ${data}`);
     allowreplay = true;
-    drawMenu();
+    // drawMenu();
   } else {
     allowreplay = false;
     debug(`allowreplay: ${data}`);
@@ -237,7 +243,7 @@ socket.on('allowreauth', (data: boolean) => {
   if (data === true) {
     debug(`allowreauth: ${data}`);
     allowreauth = true;
-    drawMenu();
+    // drawMenu();
   } else {
     allowreauth = false;
     debug(`allowreauth: ${data}`);
@@ -280,3 +286,49 @@ socket.on('shutdownCountdownUpdate', (remainingSeconds: any) => {
 term.onTitleChange((title) => {
   document.title = title;
 });
+
+window.addEventListener('message', windowMessage);
+
+function windowMessage(event) {
+  if (event.data.method === 'keypress') {
+    let eventType = 'keydown';
+    if (event.data.keyCode === 32) {
+      eventType = 'keypress';
+    }
+    term.focus();
+    let kevent = new KeyboardEvent(eventType, {
+      key: event.data.key,
+      code: event.data.code,
+      bubbles: true,
+      cancelable: true,
+      composed: true,
+    });
+    if (event.data.keyCode === 32) {
+      Object.defineProperty(kevent, 'charCode', {
+        get: function () {
+          return 32;
+        },
+      });
+    }
+    Object.defineProperty(kevent, 'which', {
+      get: function () {
+        return event.data.keyCode;
+      },
+    });
+    Object.defineProperty(kevent, 'keyCode', {
+      get: function () {
+        return event.data.keyCode;
+      },
+    });
+    // console.log(kevent);
+    term.textarea.dispatchEvent(kevent);
+  } else if (event.data.method === 'scan') {
+    // console.log('TRYING TO ENTER SCAN');
+    term.paste(event.data.scanned);
+    windowMessage({ data: { key: 'Enter', keyCode: 13, code: 'Enter', method: 'keypress' } });
+  }
+}
+
+// term.onKey(({ key, domEvent }) => {
+//   console.log({ key, domEvent });
+// });
